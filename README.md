@@ -17,6 +17,16 @@ The current algorithm is described in:
 > M. (2023). A self-training automatic infant-cry detector. _Neural
 > Computing and Applications_, _35_(11), 8543-8559.
 
+## Tone Unit
+A Tone Unit coarsely corresponds to *spoken dialogue units* containing finite and meaningful interactions. 
+A Tone Unit  is a portion of speech uttered within a coherent intonation contour. Technically, they are audio-signal portions with a high and continuous energy level. Energy is here intended as the squared sum of the samples of an audio-signal segment divided by the number of signal-samples (signal-segment *power*).
+Tone Units are valuable for increasing ASR performance as they mostly contain complete sentences.
+
+## Input and Output
+
+The input is a wave audio file (mono, PCM-signed 16 bit, 16kHz) containing a sequence of utterances in any language.
+The output is a .LAB file (a [Wavesufer](https://sourceforge.net/projects/wavesurfer/) compliant transcription), a text file containing the markers that set the end of the Tone Units contained in the audio. 
+
 
 ## Preparation
 
