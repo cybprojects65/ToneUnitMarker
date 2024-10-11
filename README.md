@@ -24,8 +24,10 @@ Tone Units are valuable for increasing ASR performance as they mostly contain co
 
 ## Input and Output
 
-The input is a wave audio file (mono, PCM-signed 16 bit, 16kHz) containing a sequence of utterances in any language.
+The input is a Wave audio file (mono, PCM-signed 16 bit, 16kHz) containing a sequence of utterances in any language.
 The output is a .LAB file (a [Wavesufer](https://sourceforge.net/projects/wavesurfer/) compliant transcription), a text file containing the markers that set the end of the Tone Units contained in the audio. 
+
+![Example of Wave file with annotation imported into Wavesurfer.](https://github.com/cybprojects65/ToneUnitMarker/blob/main/Annotation_example_in_Wavesurfer.jpg)
 
 
 ## Preparation
