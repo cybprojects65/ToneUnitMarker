@@ -22,7 +22,7 @@ public class ToneUnitMarker {
 	public static void printNotes() {
 		System.out.println("Parameters:");
 		System.out.println("-i: path to the input audio file");
-		System.out.println("-m: minimum number of tone unit to search for (="+minEnergyMultiplierD+")");
+		System.out.println("-m: minimum number of tone unit to search for (="+minimumToneUnitsD+")");
 		System.out.println("-t: maximum number of iterations (="+maxIterationsD+")");
 		System.out.println("-w: analysis window in seconds (="+windowInSecD+")");
 		System.out.println("-e: energy threshold loss to set a marker (percent) (="+initialEnergyThrPercD+")");
