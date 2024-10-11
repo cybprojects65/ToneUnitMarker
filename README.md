@@ -49,12 +49,27 @@ Create a standalone uber-JAR containing all dependencies from the GIT repository
 ## Execution from the command line
 
 Install Java 16 or higher.
+
+*Processing long audio with multiple sentences:*
+
 Download the [text.wav](https://github.com/cybprojects65/ToneUnitMarker/raw/refs/heads/main/test.wav) file (a mono, PCM-signed 16 bit, 16kHz recording).
 Open a prompt.
 Execute:
 
-    java -cp ./tum.jar it.cnr.speech.toneunit.ToneUnitMarker -w0.2 -e90 -p100 -m3
+    java -cp ./tum.jar it.cnr.speech.toneunit.ToneUnitMarker -i./test.wav -w0.2 -e90 -p100 -m3
 
 This instruction executes the analysis using a 200 ms window (w=0.2 s), detecting energy loss of 90% between two consecutive windows, and discarding losses between  too high energetic windows (of at least 100 times the lowest energy window, which normally contains silence). It will search for at least 3 tone units. If less then 3 tone units are found, the system will automatically decrease the energy jump by 10% and retry. A maximum of 100 iterations of energy reduction will be attempted.
 
 The parametrisation above is useful for long audio files containing multiple sentences.
+
+*Processing short audio with disfluency:*
+
+Download the [singleword.wav](https://github.com/cybprojects65/ToneUnitMarker/raw/refs/heads/main/singleword.wav) file (a mono, PCM-signed 16 bit, 16kHz recording).
+Open a prompt.
+Execute:
+
+    java -cp ./tum.jar it.cnr.speech.toneunit.ToneUnitMarker -i./singleword.wav -w0.1 -e99 -p0 -m3
+
+This instruction executes the analysis using a 100 ms window (w=0.1 s), detecting energy loss of 99% between two consecutive windows, and does not discard losses between too high energetic windows (the multiplier is disabled). It will search for at least 3 tone units. If less then 3 tone units are found, the system will automatically decrease the energy jump by 10% and retry. A maximum of 100 iterations of energy reduction will be attempted.
+
+The parametrisation above is useful for short audio files containing a few words uttered with disfluency.
