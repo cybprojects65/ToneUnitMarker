@@ -12,11 +12,39 @@ public class Energy {
 	public static String ENERGYSEGMENTATIONFILE = "energy_segmentation.csv";
 	public static String DERIVATIVEFILE = "energy_derivative.csv";
 
+	public double[] cutEnergySignal(double [] energy, double windowInSec, double t0, double t1) {
+		int startIdx = 0;
+		int endIdx = 0;
+		for (int ti=0;ti<energy.length;ti++) {
+			double windowtime = windowInSec*ti;
+			if ((windowtime+windowInSec)>t0 && startIdx==0) {
+				//System.out.println("next time "+(windowtime+windowInSec)+">"+t0);
+				startIdx = ti;
+			}
+			if ((windowtime+windowInSec)>t1 && endIdx == 0) {
+				//System.out.println("next time "+(windowtime+windowInSec)+">"+t1);
+				endIdx = ti;
+				break;
+			}
+		}
+		
+		if (endIdx==0)
+			endIdx = energy.length-1;
+		
+		if (startIdx>=endIdx)
+			endIdx = Math.min(startIdx+2,energy.length-1);
+		
+        int segmentLength = endIdx - startIdx+1;
+        double[] segment = new double[segmentLength];
+        System.arraycopy(energy, startIdx, segment, 0, segmentLength);
+		return segment;
+	}
+	
 	public LinkedHashSet<double[]> estimateToneUnits(File audioFile, int minimumToneUnits, int maxIterations,
-			double initialEnergyThrPerc, double windowInSec, double minEnergyMultiplier) throws Exception {
+			double initialEnergyThrPerc, double windowInSec, double minEnergyMultiplier, double t0, double t1) throws Exception {
 		boolean normalize = true;
 		double[] normalisedEnergyCurve = energyCurve((float) windowInSec, audioFile, normalize);
-		double[] derivative = UtilsMath.derivative(normalisedEnergyCurve);
+		//double[] derivative = UtilsMath.derivative(normalisedEnergyCurve);
 		double meanEnergy = UtilsMath.mean(normalisedEnergyCurve);
 		double minEnergyC = UtilsMath.min(normalisedEnergyCurve);
 		// Utils.writeSignal2File(derivative, new File(outputFolder,DERIVATIVEFILE));
@@ -36,9 +64,16 @@ public class Energy {
 		
 		System.out.println("signal minE:"+minEnergy+" meanE:"+meanEnergy);
 		
+		if (t0 >=0 && t1>t0) {
+			//cut the signal
+			normalisedEnergyCurve = cutEnergySignal(normalisedEnergyCurve,windowInSec,t0,t1);
+		}
+		
 		while (ntries < maxTries) {
 			maxSNR = 0;
 			double time0 = 0;
+			if (t0 >=0 && t1>t0) 
+				time0 = time0+t0;
 			waveCounter = 0;
 			// BufferedWriter bw = new BufferedWriter(new FileWriter(new File(outputFolder,
 			// ENERGYSEGMENTATIONFILE), true));
@@ -57,6 +92,9 @@ public class Energy {
 //					int i1 = (int) (time1 * sfrequency);
 					if (nrgloss > 0) {// exclude silence
 						double[] timemark = new double[2];
+						if (t0 >=0 && t1>t0) 
+							time1 = time1+t0;
+						
 						timemark[0] = time0;
 						timemark[1] = time1;
 						marks.add(timemark);
@@ -87,9 +125,10 @@ public class Energy {
 
 		} // end while
 
-		if (waveCounter == 0)
+		if (waveCounter == 0 || waveCounter < minNumberOfWavesToFind) {
 			System.out.println("No tone unit found");
-
+			marks = new LinkedHashSet<double[]>();
+		}
 		System.out.println("Estimated SNR: " + maxSNR);
 
 		return marks;

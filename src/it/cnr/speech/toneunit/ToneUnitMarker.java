@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.util.LinkedHashSet;
 
 import it.cnr.speech.audiofeatures.Energy;
+import it.cnr.speech.statistics.AudioStats;
 
 public class ToneUnitMarker {
 
@@ -28,6 +29,8 @@ public class ToneUnitMarker {
 		System.out.println("-e: energy threshold loss to set a marker (percent) (="+initialEnergyThrPercD+")");
 		System.out.println("-p: multiplier for minimum energy to set a marker (percent) (="+minEnergyMultiplierD+" Set 0 to disable)");
 		System.out.println("-o: output file (.LAB) to write (=<audiofilename>.lab)");
+		System.out.println("-s: start time (in seconds) of  the analysis on the input file (=-1 entire file)");
+		System.out.println("-d: end time (in seconds) of the analysis on the input file (=-1 entire file)");
 		System.out.println("-h: help");
 	}
 	
@@ -43,6 +46,9 @@ public class ToneUnitMarker {
 		Double initialEnergyThrPerc = null;
 		Double windowInSec = null;
 		Double minEnergyMultiplier = null;
+		Double t0 = -1d;
+		Double t1 = -1d;
+		
 		if (args == null || args.length == 0) {
 			printNotes();
 			System.exit(2);
@@ -63,7 +69,12 @@ public class ToneUnitMarker {
 				minEnergyMultiplier = Double.parseDouble(a.substring(2).trim());
 			}else if (a.startsWith("-o")) {
 				outputFile = new File(a.substring(2).trim());
-			} else if (a.startsWith("-h")) {
+			}else if (a.startsWith("-s")) {
+				t0 = Double.parseDouble(a.substring(2).trim());
+			}else if (a.startsWith("-d")) {
+				t1 = Double.parseDouble(a.substring(2).trim());
+			}
+			else if (a.startsWith("-h")) {
 				printNotes();
 				System.exit(0);
 			}
@@ -108,20 +119,24 @@ public class ToneUnitMarker {
 		System.out.println("windowInSec: " + windowInSec);
 		System.out.println("minEnergyMultiplier: " + minEnergyMultiplier);
 		
+		System.out.println("start time: " + minEnergyMultiplier);
+		System.out.println("end time: " + minEnergyMultiplier);
+		
 		System.out.println("output File: " + outputFile.getAbsolutePath());
 		tum.toneUnitSegmentation(audioFile, outputFile, minimumToneUnits, maxIterations, initialEnergyThrPerc,
-				windowInSec,minEnergyMultiplier);
+				windowInSec,minEnergyMultiplier,t0,t1);
 	}
 
 	public void toneUnitSegmentation(File audioFile, File outputFile, int minimumToneUnits, int maxIterations,
-			double initialEnergyThrPerc, double windowInSec, double minEnergyMultiplier) throws Exception {
+			double initialEnergyThrPerc, double windowInSec, double minEnergyMultiplier, double t0, double t1) throws Exception {
 
 		Energy nrg = new Energy();
 		LinkedHashSet<double[]> marks = nrg.estimateToneUnits(audioFile, minimumToneUnits, maxIterations,
-				initialEnergyThrPerc, windowInSec, minEnergyMultiplier);
+				initialEnergyThrPerc, windowInSec, minEnergyMultiplier, t0,t1);
 
 		vector2LabFile(marks, outputFile);
-
+		AudioStats as = new AudioStats();
+		as.generateStats(marks, audioFile);
 	}
 
 	public static void vector2LabFile(LinkedHashSet<double[]> marks, File labfile) throws Exception {
