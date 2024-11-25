@@ -26,6 +26,7 @@ Tone Units are valuable for increasing ASR performance as they mostly contain co
 
 The input is a Wave audio file (mono, PCM-signed 16 bit, 16kHz) containing a sequence of utterances in any language.
 The output is a .LAB file (a [Wavesufer](https://sourceforge.net/projects/wavesurfer/) compliant transcription), a text file containing the markers that set the end of the Tone Units contained in the audio. 
+An additional output with the suffix "_stats.LAB" is produced, which contains energy and pitch averages for the detected Tone Units.
 
 ![Example of Wave file with annotation imported into Wavesurfer.](https://github.com/cybprojects65/ToneUnitMarker/blob/main/Annotation_example_in_Wavesurfer.jpg)
 
@@ -43,6 +44,8 @@ Create a standalone uber-JAR containing all dependencies from the GIT repository
     -e: energy threshold loss to set a marker (percent) (=90.0)
     -p: multiplier for minimum energy to set a marker (percent) (=100.0 Set 0 to disable)
     -o: output file (.LAB) to write (=<audiofilename>.lab)
+    -s: start time (in seconds) of  the analysis on the input file (=-1 entire file)
+    -d: end time (in seconds) of the analysis on the input file (=-1 entire file)
     -h: help
 
    
@@ -57,6 +60,10 @@ Open a prompt.
 Execute:
 
     java -cp ./tum.jar it.cnr.speech.toneunit.ToneUnitMarker -i./test.wav -w0.2 -e90 -p100 -m3
+
+Execute (for returning the analysis on subsignal selection between 0.9s and 2.0s):
+
+    java -cp ./tum.jar it.cnr.speech.toneunit.ToneUnitMarker -i./test.wav -w0.1 -e90 -p100 -m3 -s0.9 -d2.0
 
 This instruction executes the analysis using a 200 ms window (w=0.2 s), detecting energy loss of 90% between two consecutive windows, and discarding losses between  too high energetic windows (of at least 100 times the lowest energy window, which normally contains silence). It will search for at least 3 tone units. If less then 3 tone units are found, the system will automatically decrease the energy jump by 10% and retry. A maximum of 100 iterations of energy reduction will be attempted.
 
