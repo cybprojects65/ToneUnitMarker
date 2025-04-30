@@ -99,7 +99,7 @@ public class Energy {
 						timemark[1] = time1;
 						marks.add(timemark);
 					}
-					System.out.println("TU"+waveCounter+" E:"+currentEnrg+" L:"+nrgloss);
+					//System.out.println("TU"+waveCounter+" E:"+currentEnrg+" L:"+nrgloss);
 					
 					double SNR = 10 * Math.log10(normalisedEnergyCurve[i - 1] / normalisedEnergyCurve[i]);
 					if (SNR > maxSNR)
