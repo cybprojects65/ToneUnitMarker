@@ -278,7 +278,7 @@ public class ToneUnitMarker {
 			int waveCounter = 1;
 			for (double[] times : marks) {
 				double time0 = times[0];
-				double time1 = times[1]; //+windowInSec;
+				double time1 = times[1]+(windowInSec/2d);
 				int i0 = (int) (time0 * sfrequency);
 				int i1 = Math.min((int) (time1 * sfrequency),(signal.length-1));
 				short[] subsignal = new short[i1 - i0 + 1];

@@ -47,7 +47,7 @@ public class Energy {
 		boolean normalize = true;
 		double[] normalisedEnergyCurve = energyCurve((float) windowInSec, audioFile, normalize);
 		//double[] derivative = UtilsMath.derivative(normalisedEnergyCurve);
-		double meanEnergy = UtilsMath.mean(normalisedEnergyCurve);
+		
 		
 		List<Double> nonzeroenergy = new ArrayList<>(); 
 		for (int n=0;n<normalisedEnergyCurve.length;n++) {
@@ -58,6 +58,8 @@ public class Energy {
 		double[] nonzeroen_arr = nonzeroenergy.stream()
                 .mapToDouble(Double::doubleValue)
                 .toArray();
+		
+		double meanEnergy = UtilsMath.mean(nonzeroen_arr);
 		
 		double minEnergyC = UtilsMath.min(normalisedEnergyCurve);
 		// Utils.writeSignal2File(derivative, new File(outputFolder,DERIVATIVEFILE));
@@ -78,7 +80,7 @@ public class Energy {
 		*/
 		double minEnergy = UtilsMath.quantiles(nonzeroen_arr)[(int)minEnergyMultiplier];
 		
-		System.out.println("signal minE:"+minEnergy+" meanE:"+meanEnergy);
+		System.out.println("signal minE (based on quantile "+((int)minEnergyMultiplier+1)+"): "+minEnergy+" meanE:"+meanEnergy);
 		
 		if (t0 >=0 && t1>t0) {
 			//cut the signal
@@ -118,7 +120,7 @@ public class Energy {
 					//System.out.println("TU"+waveCounter+" E:"+currentEnrg+" L:"+nrgloss);
 					
 					double SNR = 10 * Math.log10(normalisedEnergyCurve[i - 1] / normalisedEnergyCurve[i]);
-					if (SNR > maxSNR)
+					if (SNR > maxSNR && !Double.isInfinite(SNR))
 						maxSNR = SNR;
 					time0 = time1;
 					waveCounter++;
