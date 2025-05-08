@@ -1,7 +1,9 @@
 package it.cnr.speech.audiofeatures;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 
 import it.cnr.workflow.utils.UtilsMath;
 
@@ -46,6 +48,17 @@ public class Energy {
 		double[] normalisedEnergyCurve = energyCurve((float) windowInSec, audioFile, normalize);
 		//double[] derivative = UtilsMath.derivative(normalisedEnergyCurve);
 		double meanEnergy = UtilsMath.mean(normalisedEnergyCurve);
+		
+		List<Double> nonzeroenergy = new ArrayList<>(); 
+		for (int n=0;n<normalisedEnergyCurve.length;n++) {
+			if (normalisedEnergyCurve[n]>0) {
+				nonzeroenergy.add(normalisedEnergyCurve[n]);
+			}
+		} 
+		double[] nonzeroen_arr = nonzeroenergy.stream()
+                .mapToDouble(Double::doubleValue)
+                .toArray();
+		
 		double minEnergyC = UtilsMath.min(normalisedEnergyCurve);
 		// Utils.writeSignal2File(derivative, new File(outputFolder,DERIVATIVEFILE));
 
@@ -58,9 +71,12 @@ public class Energy {
 		double energyThr = initialEnergyThrPerc / 100d;
 		LinkedHashSet<double[]> marks = null;
 		//double minEnergy = 0; //100*minEnergyC;
+		/*
 		double minEnergy = minEnergyMultiplier*minEnergyC;
 		if (minEnergy==0)
 			minEnergy = meanEnergy;
+		*/
+		double minEnergy = UtilsMath.quantiles(nonzeroen_arr)[(int)minEnergyMultiplier];
 		
 		System.out.println("signal minE:"+minEnergy+" meanE:"+meanEnergy);
 		
