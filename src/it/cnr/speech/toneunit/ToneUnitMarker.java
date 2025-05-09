@@ -20,7 +20,7 @@ public class ToneUnitMarker {
 	static Integer maxIterationsD = 100;
 	static Double initialEnergyThrPercD = 90d;
 	static Double windowInSecD = 0.2;
-	static Double minEnergyMultiplierD = 100d;//100d;
+	static Double minEnergyMultiplierD = 0d;//100d;
 	
 	public static void printNotes() {
 		System.out.println("Parameters:");
@@ -29,7 +29,7 @@ public class ToneUnitMarker {
 		System.out.println("-t: maximum number of iterations (="+maxIterationsD+")");
 		System.out.println("-w: analysis window in seconds (="+windowInSecD+")");
 		System.out.println("-e: energy threshold loss to set a marker (percent) (="+initialEnergyThrPercD+")");
-		System.out.println("-p: multiplier for minimum energy to set a marker (percent) (="+minEnergyMultiplierD+" Set 0 to disable)");
+		System.out.println("-p: quartile of the energy distribution to use as the minimum energy threshold (0=25th percentile; 1=50th; 2=75th; 3=100th)");
 		System.out.println("-o: output file (.LAB) to write (=<audiofilename>.lab)");
 		System.out.println("-s: start time (in seconds) of  the analysis on the input file (=-1 entire file)");
 		System.out.println("-d: end time (in seconds) of the analysis on the input file (=-1 entire file)");
