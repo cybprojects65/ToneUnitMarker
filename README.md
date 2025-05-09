@@ -42,7 +42,7 @@ Create a standalone uber-JAR containing all dependencies from the GIT repository
     -t: maximum number of iterations (=100)
     -w: analysis window in seconds (=0.2)
     -e: energy threshold loss to set a marker (percent) (=90.0)
-    -p: multiplier for minimum energy to set a marker (percent) (=100.0 Set 0 to disable)
+    -p: quartile of the energy distribution to use as the minimum energy threshold (0=25th percentile; 1=50th; 2=75th; 3=100th)
     -o: output file (.LAB) to write (=<audiofilename>.lab)
     -s: start time (in seconds) of  the analysis on the input file (=-1 entire file)
     -d: end time (in seconds) of the analysis on the input file (=-1 entire file)
@@ -62,11 +62,11 @@ Download the [text.wav](https://github.com/cybprojects65/ToneUnitMarker/raw/refs
 Open a prompt.
 Execute:
 
-    java -cp ./tum.jar it.cnr.speech.toneunit.ToneUnitMarker -i./test.wav -w0.2 -e90 -p100 -m3
+    java -cp ./tum.jar it.cnr.speech.toneunit.ToneUnitMarker -i./test.wav -w0.2 -e90 -p0 -m3
 
 Execute (for returning the analysis on subsignal selection between 0.9s and 2.0s):
 
-    java -cp ./tum.jar it.cnr.speech.toneunit.ToneUnitMarker -i./test.wav -w0.1 -e90 -p100 -m3 -s0.9 -d2.0
+    java -cp ./tum.jar it.cnr.speech.toneunit.ToneUnitMarker -i./test.wav -w0.1 -e90 -p0 -m3 -s0.9 -d2.0
 
 This instruction executes the analysis using a 200 ms window (w=0.2 s), detecting energy loss of 90% between two consecutive windows. Applies a prior multiplication on the lowest energy detected to set the limit of low energy (100 times the lowest energy window, in the example). It will search for at least 3 tone units. If less then 3 tone units are found, the system will automatically decrease the energy jump by 10% and retry. A maximum of 100 iterations of energy reduction will be attempted.
 
@@ -90,6 +90,6 @@ Download [PS1Audio.wav](https://github.com/cybprojects65/ToneUnitMarker/blob/mai
 Open a prompt.
 Execute:
 
-    java -cp ./tum.jar it.cnr.speech.toneunit.ToneUnitMarker -i./PS1Audio.wav -w0.2 -e90 -p100 -t100 -L30 -Strue -F"./output_of_segmentation"
+    java -cp ./tum.jar it.cnr.speech.toneunit.ToneUnitMarker -i./PS1Audio.wav -w0.2 -e90 -p0 -t1 -L30 -Strue -F"./output_of_segmentation"
 
 This instruction executes the analysis using a 200 ms window (w=0.2 s), detecting energy loss of 90% between two consecutive windows. Applies a prior multiplication on the lowest energy detected to set the limit of low energy (100 times the lowest energy window, in the example). It segment the signal into consecutive Tone Units of 30s (L=30). A maximum of 100 iterations (t=100) to attempt optimal segmentation will be conducted, otherwise abrupt segmentation into 30 s chunks is performed.
