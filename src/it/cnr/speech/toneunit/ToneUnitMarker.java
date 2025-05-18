@@ -211,7 +211,11 @@ public class ToneUnitMarker {
 				break;
 			}
 		}
-		
+		AudioBits bits = new AudioBits(audioFile);
+		short[] signal = bits.getShortVectorAudio();
+		float sfrequency = bits.getAudioFormat().getSampleRate();
+		bits.ais.close();
+		double tmax = (double) signal.length/(double)sfrequency;
 		if (iteration==maxIterations) {
 			System.out.println("###################################################################################");
 			System.out.println("IMPOSSIBLE TO FIND A SUITABLE SEPARATION INTO TONE UNITS - USING ABRUPT SEPARATION");
@@ -221,25 +225,31 @@ public class ToneUnitMarker {
 			double t00 = 0;
 			double t01 = t00+maxLength;
 
-			AudioBits bits = new AudioBits(audioFile);
-			short[] signal = bits.getShortVectorAudio();
-			float sfrequency = bits.getAudioFormat().getSampleRate();
-			bits.ais.close();
-			double tmax = (double) signal.length/(double)sfrequency;
 			while (t01<=tmax) {
 				double [] segment = {t00,t01};
 				abruptmarks.add(segment);
 				t00=t01;
 				t01 = t00+maxLength;
 			}
-			double [] segment = {t00,tmax};
-			abruptmarks.add(segment);
+			if (t00<tmax) {
+				double [] segment = {t00,tmax};
+				abruptmarks.add(segment);
+			}
 			marks = abruptmarks;
+			
 			System.out.println("Cut-off TU boundaries. Obtained "+marks.size()+" tone units");
 		}else {
 			System.out.println("Found "+marks.size()+" tone units");
 			//greedy accumulation of intervals
 			LinkedHashSet<double[]> greedymarks = new LinkedHashSet<>();
+			
+			double[] lastElement = marks.stream().reduce((first, second) -> second).orElse(null);
+			double lastt = lastElement[1];
+			if (lastt<tmax) {
+				double [] segment = {lastt,tmax};
+				marks.add(segment);
+			}
+			
 			double t00 = 0;
 			double t01 = 0;
 			for (double[] times : marks) {
@@ -271,14 +281,11 @@ public class ToneUnitMarker {
 				outputFolder.mkdir();
 			
 			System.out.println("Saving segments to "+outputFolder.getAbsolutePath());
-			AudioBits bits = new AudioBits(audioFile);
-			short[] signal = bits.getShortVectorAudio();
-			float sfrequency = bits.getAudioFormat().getSampleRate();
-			bits.ais.close();
+			
 			int waveCounter = 1;
 			for (double[] times : marks) {
 				double time0 = times[0];
-				double time1 = times[1]+(windowInSec/2d);
+				double time1 = times[1];//+(windowInSec/2d);
 				int i0 = (int) (time0 * sfrequency);
 				int i1 = Math.min((int) (time1 * sfrequency),(signal.length-1));
 				short[] subsignal = new short[i1 - i0 + 1];

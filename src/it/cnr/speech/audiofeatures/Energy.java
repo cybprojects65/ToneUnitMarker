@@ -71,6 +71,8 @@ public class Energy {
 		int minNumberOfWavesToFind = minimumToneUnits;
 		double maxSNR = 0;
 		double energyThr = initialEnergyThrPerc / 100d;
+		double tmax = (double) signal.length/(double)sfrequency;
+		
 		LinkedHashSet<double[]> marks = null;
 		//double minEnergy = 0; //100*minEnergyC;
 		/*
@@ -127,6 +129,14 @@ public class Energy {
 				}
 				
 			}
+			
+			if (time0<tmax) {
+				double[] timemark = new double[2];
+				timemark[0] = time0;
+				timemark[1] = tmax;
+				marks.add(timemark);
+			} 
+			
 			// bw.close();
 			if (waveCounter >= minNumberOfWavesToFind) {
 				ntries = maxTries;
