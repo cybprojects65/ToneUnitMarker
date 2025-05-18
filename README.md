@@ -90,6 +90,6 @@ Download [PS1Audio.wav](https://github.com/cybprojects65/ToneUnitMarker/blob/mai
 Open a prompt.
 Execute:
 
-    java -cp ./tum.jar it.cnr.speech.toneunit.ToneUnitMarker -i./PS1Audio.wav -w0.2 -e90 -p0 -t1 -L30 -Strue -F"./output_of_segmentation"
+    java -cp ./tum.jar it.cnr.speech.toneunit.ToneUnitMarker -i./PS1Audio.wav -w0.2 -e60 -p0 -t1 -L30 -Strue -F"./output_of_segmentation"
 
 This instruction executes the analysis using a 200 ms window (w=0.2 s), detecting energy loss of 90% between two consecutive windows. Applies a prior multiplication on the lowest energy detected to set the limit of low energy (100 times the lowest energy window, in the example). It segment the signal into consecutive Tone Units of 30s (L=30). A maximum of 100 iterations (t=100) to attempt optimal segmentation will be conducted, otherwise abrupt segmentation into 30 s chunks is performed.
