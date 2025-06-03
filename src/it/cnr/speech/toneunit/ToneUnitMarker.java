@@ -281,9 +281,12 @@ public class ToneUnitMarker {
 				outputFolder.mkdir();
 			
 			System.out.println("Saving segments to "+outputFolder.getAbsolutePath());
+			//System.out.println("Signal length "+signal.length);
+			
 			
 			int waveCounter = 1;
 			for (double[] times : marks) {
+				System.out.print(""+waveCounter+". ");
 				double time0 = times[0];
 				double time1 = times[1];//+(windowInSec/2d);
 				int i0 = (int) (time0 * sfrequency);
@@ -294,12 +297,14 @@ public class ToneUnitMarker {
 				}
 				try {
 					//System.out.println("SNR = "+SNR);
+					System.out.println("Saving audio from t0="+time0+" ("+i0 +") "+" to t1="+time1+" ("+i1+")");
+					//System.out.println("Sub signal length "+subsignal.length);
+					
 					File outputWaveFile = new File(outputFolder, audioFile.getName().replace(".wav", "")+"_" + waveCounter + ".wav");
 					AudioWaveGenerator.generateWaveFromSamplesWithSameFormat(subsignal, outputWaveFile, bits.getAudioFormat());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				System.out.print(""+waveCounter+". ");
 				waveCounter = waveCounter+1;
 				
 			}
