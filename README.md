@@ -64,11 +64,11 @@ Execute:
 
     java -cp ./tum.jar it.cnr.speech.toneunit.ToneUnitMarker -i./test.wav -w0.2 -e90 -p0 -m3
 
-Execute (for returning the analysis on subsignal selection between 0.9s and 2.0s):
+This instruction executes the analysis using a 200 ms window (w=0.2 s), detecting energy loss of 90% between two consecutive windows. Applies a 25th percentile threshold on the signal to set the limit of low energy. It will search for at least 3 tone units. If less then 3 tone units are found, the system will automatically decrease the energy jump by 10% and retry. A maximum of 100 iterations of energy reduction will be attempted.    
+
+Execute (for returning the analysis on subsignal selection between 0.9s and 2.0s with w=0.1s):
 
     java -cp ./tum.jar it.cnr.speech.toneunit.ToneUnitMarker -i./test.wav -w0.1 -e90 -p0 -m3 -s0.9 -d2.0
-
-This instruction executes the analysis using a 200 ms window (w=0.2 s), detecting energy loss of 90% between two consecutive windows. Applies a prior multiplication on the lowest energy detected to set the limit of low energy (100 times the lowest energy window, in the example). It will search for at least 3 tone units. If less then 3 tone units are found, the system will automatically decrease the energy jump by 10% and retry. A maximum of 100 iterations of energy reduction will be attempted.
 
 The parametrisation above is useful for long audio files containing multiple sentences.
 
@@ -80,7 +80,7 @@ Execute:
 
     java -cp ./tum.jar it.cnr.speech.toneunit.ToneUnitMarker -i./singleword.wav -w0.1 -e99 -p0 -m3
 
-This instruction executes the analysis using a 100 ms window (w=0.1 s), detecting energy loss of 99% between two consecutive windows, and does not discard losses between too high energetic windows (the multiplier is disabled). It will search for at least 3 tone units. If less then 3 tone units are found, the system will automatically decrease the energy jump by 10% and retry. A maximum of 100 iterations of energy reduction will be attempted.
+This instruction executes the analysis using a 100 ms window (w=0.1 s), detecting energy loss of 99% between two consecutive windows. It will search for at least 3 tone units. If less then 3 tone units are found, the system will automatically decrease the energy jump by 10% and retry. A maximum of 100 iterations of energy reduction will be attempted.
 
 The parametrisation above is useful for short audio files containing a few words uttered with disfluency.
 
@@ -92,4 +92,4 @@ Execute:
 
     java -cp ./tum.jar it.cnr.speech.toneunit.ToneUnitMarker -i./PS1Audio.wav -w0.2 -e60 -p0 -t1 -L30 -Strue -F"./output_of_segmentation"
 
-This instruction executes the analysis using a 200 ms window (w=0.2 s), detecting energy loss of 90% between two consecutive windows. Applies a prior multiplication on the lowest energy detected to set the limit of low energy (100 times the lowest energy window, in the example). It segment the signal into consecutive Tone Units of 30s (L=30). A maximum of 100 iterations (t=100) to attempt optimal segmentation will be conducted, otherwise abrupt segmentation into 30 s chunks is performed.
+This instruction executes the analysis using a 200 ms window (w=0.2 s), detecting energy loss of 60% between two consecutive windows. It segments the signal into consecutive Tone Units of 30s (L=30). A maximum of 1 iteration (t=1) is used to attempt optimal segmentation, otherwise abrupt segmentation into 30 s chunks is performed.
